@@ -25,8 +25,11 @@
  */
 int length(char* txt) {
 	int len = 0;
-	
-	/* REPLACE WITH YOUR CODE */
+	int i;
+	// Loop through the array until you reach the terminator char
+	for (i = 0; txt[i] != '\0'; i++) {
+  		len++;
+	}
 
 	return len;  
 }
