@@ -51,8 +51,11 @@ int length(char* txt) {
 char *welcome(char* hello, char* name) {
 	// dynamically allocate a new string
 	char *message = malloc(sizeof(char)*MAX_LIMIT);
-		
-	/* REPLACE WITH YOUR CODE */
+	// uses strcat function in order to concatenate the hello and a space, 
+	// and then the result with the name
+	strcat(hello, " ");
+	strcat(hello, name);
+	message = strcat(hello, "!");
 	
 	return message;	
 }
