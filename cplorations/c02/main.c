@@ -53,9 +53,11 @@ char *welcome(char* hello, char* name) {
 	char *message = malloc(sizeof(char)*MAX_LIMIT);
 	// uses strcat function in order to concatenate the hello and a space, 
 	// and then the result with the name
-	strcat(hello, " ");
-	strcat(hello, name);
-	message = strcat(hello, "!");
+	strcpy(message, hello);
+	strcat(message, " ");
+	strcat(message, name);
+	strcat(message, "!");
+	
 	
 	return message;	
 }
