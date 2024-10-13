@@ -100,8 +100,14 @@ void reverse(char* txt, char* result) {
  */
 int vowels(char* txt) {
 	int vowel = 0;
+	int i;
 
-	/* REPLACE WITH YOUR CODE */
+	for (i = 0; txt[i] != '\0'; i++) {
+		txt[i] = tolower(txt[i]);
+  		if (txt[i] == 'a' || txt[i] == 'e' || txt[i] == 'i' || txt[i] == 'o' || txt[i] == 'u') {
+			vowel++;
+		}
+	}
 
 	return vowel;
 }
