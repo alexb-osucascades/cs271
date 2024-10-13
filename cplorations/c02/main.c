@@ -73,7 +73,18 @@ char *welcome(char* hello, char* name) {
  */
 void reverse(char* txt, char* result) {
 
-	/* REPLACE WITH YOUR CODE */
+	int stringLength = length(txt);
+	// In order to use the stringLength as an index, subtract one.
+	 int i;
+	 int countUp = 0;
+	for (i = stringLength - 1; txt[i] != txt[0]; i--) {
+		result[countUp] = txt[i];
+		countUp++;
+	}
+	// because the loop terminates at the first value in the array,
+	// add it at the end 
+	result[stringLength - 1] = txt[0];
+	result[stringLength] = '\0';
 	
 }
 
