@@ -129,9 +129,22 @@ int vowels(char* txt) {
  */
 int quartile(char* name) {
 
-	/* REPLACE WITH YOUR CODE */
+	char firstLetter = tolower(name[0]);
+	if ((firstLetter >= 'a') && (firstLetter <= 'f')) {
+		return 1;
+	}
+	if ((firstLetter >= 'g') && (firstLetter <= 'l')) {
+		return 2;
+	}
+	if ((firstLetter >= 'm') && (firstLetter <= 'r')) {
+		return 3;
+	}
+	if ((firstLetter >= 's') && (firstLetter <= 'z')) {
+		return 4;
+	}
+
+	return -1;
 	
-	return -1; // <==fix!
 }
 
 
