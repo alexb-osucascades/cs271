@@ -47,6 +47,7 @@ void parse(FILE * file){
 	
 		char line[MAX_LINE_LENGTH] = {0};
 		char inst_type;
+		char label[MAX_LABEL_LENGTH];
 
 		while (fgets(line, sizeof(line), file))  {
 			strip(line);
@@ -59,6 +60,8 @@ void parse(FILE * file){
 			}
 			else if (is_label(line)) {
 				inst_type = 'L';
+				extract_label(line, label);
+				strcpy(line, label);
 			}
 			else if (is_Ctype(line)) {
 				inst_type = 'C';
@@ -111,14 +114,12 @@ char *extract_label(const char *line, char* label) {
 	int i = 0;
 
 	for (char *line2 = line; *line2; line2++) { 
-		if (*line2 == '(' || *line2 == ')'){ 
+		if (*line2 != '(' && *line2 != ')'){ 
 			line_new[i++] = *line2;
 		}
 	}
 	line_new[i] = '\0';
-	strcpy(line, line_new);
-	
-	label = line;
+	strcpy(label, line_new);
 
     return label;	
 
