@@ -18,6 +18,40 @@ typedef int16_t opcode;
 #define MAX_LINE_LENGTH  200
 #define MAX_LABEL_LENGTH  (MAX_LINE_LENGTH - 2)
 
+enum instr_type {
+    Invalid = -1,
+    A_type,
+    C_type,
+}; 
+
+typedef struct c_instruction {
+    opcode a:1;
+    // opcode comp
+    // opcode dest
+    // opcode jump
+    
+} c_instruction;
+
+typedef struct a_instruction {
+    union 
+    {
+        hack_addr address;
+        char *label;
+    };
+    
+    bool is_addr;
+} a_instruction;
+
+typedef struct instruction {
+    union 
+    {
+        a_instruction a_instr;
+        c_instruction c_instr;
+    };
+    
+    enum instr_type type;
+} instruction;
+
 /** function prototypes **/
 char *strip(char *s);
 
