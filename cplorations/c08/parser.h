@@ -5,6 +5,10 @@
  * [TERM] FALL 2024
  * 
  ****************************************/
+#ifndef __PARSER_H__
+#define __PARSER_H__#
+
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -62,3 +66,4 @@ bool is_label(const char *);
 bool is_Ctype(const char *);
 char *extract_label(const char *line, char* label);
 
+#endif
