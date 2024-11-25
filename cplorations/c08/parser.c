@@ -7,6 +7,7 @@
  ****************************************/
 #include "parser.h"
 #include "symtable.h"
+#include "error.h"
 
 /* Function: strip
  * -------------
@@ -50,8 +51,18 @@ void parse(FILE * file){
 		char inst_type;
 		char label[MAX_LABEL_LENGTH];
 		int i = 0;
+		unsigned int line_num;
+		unsigned int instr_num;
+
 
 		while (fgets(line, sizeof(line), file))  {
+
+			line_num++;
+			
+			if (instr_num > MAX_INSTRUCTIONS) {
+				exit_program(EXIT_TOO_MANY_INSTRUCTIONS, MAX_INSTRUCTIONS + 1);
+			}
+
 			strip(line);
 			if (!(*line)){
 				continue;
@@ -64,11 +75,20 @@ void parse(FILE * file){
 			else if (is_label(line)) {
 				inst_type = 'L';
 				extract_label(line, label);
+
+				if (!isalpha(label[0])) {
+					exit_program(EXIT_INVALID_LABEL, line_num, line);
+				}
+				if (symtable_find(label) != NULL) {
+					exit_program(EXIT_SYMBOL_ALREADY_EXISTS, line_num, line);
+
+				}
+
 				strcpy(line, label);
 				// Make i var counter
 				// if line is NOT a label, increment
 				// if line IS a label, do not increment and use this addr in symtable_insert
-				symtable_insert(i, label);
+				symtable_insert(instr_num, label);
 
 			}
 			else if (is_Ctype(line)) {
@@ -80,7 +100,8 @@ void parse(FILE * file){
 				i++;
 			}
 
-			//printf("%c  %s\n", inst_type, line);
+			printf("%u: %c  %s\n", i, inst_type, line);
+			instr_num++;
 		}
 
 }

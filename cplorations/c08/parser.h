@@ -21,6 +21,9 @@ typedef int16_t opcode;
 
 #define MAX_LINE_LENGTH  200
 #define MAX_LABEL_LENGTH  (MAX_LINE_LENGTH - 2)
+#define MAX_HACK_ADDRESS INT16_MAX
+#define MAX_INSTRUCTIONS MAX_HACK_ADDRESS 
+
 
 enum instr_type {
     Invalid = -1,

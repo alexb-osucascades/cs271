@@ -6,27 +6,26 @@
  * 
  ****************************************/
 #include "parser.h"
+#include "error.h"
 
 int main(int argc, const char *argv[])
 {		
 
-	if (argc < 2){
-	printf("Usage: %s [filename]\n", argv[0]);
-	exit(EXIT_FAILURE);
-	return 1;
+	if (argc != 2) {
+		// incorrect number of arguments
+		exit_program(EXIT_INCORRECT_ARGUMENTS, argv[0]);         
 
 	} else {
 		FILE *fin = fopen(argv[1], "r" );
 
-		if (fin == NULL){
-			perror("Unable to open file!");
-			exit(EXIT_FAILURE);
+		if(fin == NULL){ 
+		exit_program(EXIT_CANNOT_OPEN_FILE, argv[1]);
+		
 
 		} else {
 
 			parse(fin);
 
-			symtable_print_labels();
 
 			fclose(fin);
 
