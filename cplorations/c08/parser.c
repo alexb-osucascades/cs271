@@ -51,8 +51,8 @@ void parse(FILE * file){
 		char inst_type;
 		char label[MAX_LABEL_LENGTH];
 		int i = 0;
-		unsigned int line_num;
-		unsigned int instr_num;
+		unsigned int line_num = 0;
+		unsigned int instr_num = 0;
 
 
 		while (fgets(line, sizeof(line), file))  {
@@ -76,19 +76,19 @@ void parse(FILE * file){
 				inst_type = 'L';
 				extract_label(line, label);
 
-				if (!isalpha(label[0])) {
-					exit_program(EXIT_INVALID_LABEL, line_num, line);
+				if (!(isalpha(label[0]))) {
+					exit_program(EXIT_INVALID_LABEL, line_num, label);
+
 				}
 				if (symtable_find(label) != NULL) {
-					exit_program(EXIT_SYMBOL_ALREADY_EXISTS, line_num, line);
-
+					exit_program(EXIT_SYMBOL_ALREADY_EXISTS, line_num, label);
 				}
-
 				strcpy(line, label);
 				// Make i var counter
 				// if line is NOT a label, increment
 				// if line IS a label, do not increment and use this addr in symtable_insert
 				symtable_insert(instr_num, label);
+				continue;
 
 			}
 			else if (is_Ctype(line)) {
@@ -100,7 +100,7 @@ void parse(FILE * file){
 				i++;
 			}
 
-			printf("%u: %c  %s\n", i, inst_type, line);
+			printf("%u: %c  %s\n", instr_num, inst_type, line);
 			instr_num++;
 		}
 
