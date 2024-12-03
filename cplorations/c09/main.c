@@ -1,5 +1,5 @@
 /****************************************
- * C-ploration 8 for CS 271
+ * C-ploration 9 for CS 271
  * 
  * [NAME] Alexander Birrell
  * [TERM] FALL 2024
@@ -7,6 +7,7 @@
  ****************************************/
 #include "parser.h"
 #include "error.h"
+#include "symtable.h"
 
 int main(int argc, const char *argv[])
 {		
@@ -26,6 +27,7 @@ int main(int argc, const char *argv[])
 
 			parse(fin);
 
+			symtable_print_labels();
 
 			fclose(fin);
 

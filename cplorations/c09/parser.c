@@ -1,5 +1,5 @@
 /****************************************
- * C-ploration 8 for CS 271
+ * C-ploration 9 for CS 271
  * 
  * [NAME] Alexander Birrell
  * [TERM] FALL 2024
@@ -53,7 +53,10 @@ void parse(FILE * file){
 		int i = 0;
 		unsigned int line_num = 0;
 		unsigned int instr_num = 0;
+		instruction instr;
 
+		add_predefined_symbols();
+		//symtable_print_labels();
 
 		while (fgets(line, sizeof(line), file))  {
 
@@ -71,6 +74,11 @@ void parse(FILE * file){
 			if (is_Atype(line)) {
 				inst_type = 'A';
 				i++;
+				if (!parse_A_instruction(line, &instr.a_instr)){
+					exit_program(EXIT_INVALID_A_INSTR, line_num, line);
+				}
+				instr.type = A_type;
+				
 			}
 			else if (is_label(line)) {
 				inst_type = 'L';
@@ -100,7 +108,7 @@ void parse(FILE * file){
 				i++;
 			}
 
-			printf("%u: %c  %s\n", instr_num, inst_type, line);
+			//printf("%u: %c  %s\n", instr_num, inst_type, line);
 			instr_num++;
 		}
 
@@ -154,4 +162,34 @@ char *extract_label(const char *line, char* label) {
 
     return label;	
 
+}
+
+void add_predefined_symbols() {
+    for (int i = 0; i < NUM_PREDEFINED_SYMBOLS; ++i) {
+        predefined_symbol symbol = predefined_symbols[i];
+        symtable_insert(symbol.address, symbol.name);
+    }
+}
+
+
+
+bool parse_A_instruction(const char *line, a_instruction *instr) {
+    char *s = (char *)malloc(strlen(line));
+    strcpy(s, line + 1);
+    char *s_end = NULL;
+    long result = strtol(s, &s_end, 10);
+    if (s == s_end) {
+        instr->label = (char *)malloc(strlen(line));
+        strcpy(instr->label, s);
+        instr->is_addr = false;
+    }
+    else if (*s_end != 0) {
+        return false;
+    }
+    else {
+        instr->address = (int16_t)result;
+        instr->is_addr = true;
+    }
+
+    return true;
 }

@@ -1,3 +1,11 @@
+/****************************************
+ * C-ploration 9 for CS 271
+ * 
+ * [NAME] Alexander Birrell
+ * [TERM] FALL 2024
+ * 
+ ****************************************/
+
 #ifndef __HACK_H__
 #define __HACK_H__
 

@@ -1,5 +1,5 @@
 /****************************************
- * C-ploration 8 for CS 271
+ * C-ploration 9 for CS 271
  * 
  * [NAME] Alexander Birrell
  * [TERM] FALL 2024
@@ -72,5 +72,7 @@ bool is_Ctype(const char *);
 char *extract_label(const char *line, char* label);
 
 void add_predefined_symbols();
+
+bool parse_A_instruction(const char *line, a_instruction *instr);
 
 #endif
