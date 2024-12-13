@@ -72,9 +72,226 @@ static const predefined_symbol predefined_symbols[NUM_PREDEFINED_SYMBOLS] = {
     {"THAT", SYM_THAT}
 };
 
+typedef enum {
+    JMP_INVALID = -1, 
+    JMP_NULL,         
+    JMP_JGT,          
+    JMP_JEQ,          
+    JMP_JGE,          
+    JMP_JLT,          
+    JMP_JNE,          
+    JMP_JLE,          
+    JMP_JMP           
+} jump_id;
+
+typedef enum {
+    DEST_INVALID = -1, 
+    DEST_NULL,         
+    DEST_M,            
+    DEST_D,           
+    DEST_MD,          
+    DEST_A,           
+    DEST_AM,          
+    DEST_AD,          
+    DEST_AMD          
+} dest_id;
+
+typedef enum {
+    COMP_INVALID = -1, 
+
+    // a=0
+    COMP_0 = 42,    
+    COMP_1 = 63,     
+    COMP_D = 12,     
+    COMP_A = 48,     
+    COMP_NOT_D = 13, 
+    COMP_NOT_A = 49, 
+    COMP_NEG_D = 15, 
+    COMP_NEG_A = 51, 
+    COMP_D_PLUS_1 = 31, 
+    COMP_A_PLUS_1 = 55, 
+    COMP_D_MINUS_1 = 14, 
+    COMP_A_MINUS_1 = 50, 
+    COMP_D_PLUS_A = 2,  
+    COMP_D_MINUS_A = 19, 
+    COMP_A_MINUS_D = 7,  
+    COMP_D_AND_A = 0,  
+    COMP_D_OR_A = 21, 
+
+    // a=1
+    COMP_M = 112,  
+    COMP_NOT_M = 113, 
+    COMP_NEG_M = 115, 
+    COMP_M_PLUS_1 = 119, 
+    COMP_M_MINUS_1 = 114, 
+    COMP_D_PLUS_M = 66,
+    COMP_D_MINUS_M = 83, 
+    COMP_M_MINUS_D = 71, 
+    COMP_D_AND_M = 64, 
+    COMP_D_OR_M = 85   
+
+} comp_id;
+
+
+static inline jump_id str_to_jumpid(const char *s) {
+    jump_id id = JMP_INVALID;
+
+    // Check if the string is NULL
+    if (s == NULL) {
+        id = JMP_NULL;
+    } else if (strcmp(s, "JGT") == 0) {
+        id = JMP_JGT;
+    } else if (strcmp(s, "JEQ") == 0) {
+        id = JMP_JEQ;
+    } else if (strcmp(s, "JGE") == 0) {
+        id = JMP_JGE;
+    } else if (strcmp(s, "JLT") == 0) {
+        id = JMP_JLT;
+    } else if (strcmp(s, "JNE") == 0) {
+        id = JMP_JNE;
+    } else if (strcmp(s, "JLE") == 0) {
+        id = JMP_JLE;
+    } else if (strcmp(s, "JMP") == 0) {
+        id = JMP_JMP;
+    } else if (strcmp(s, "") == 0) {
+        id = JMP_NULL;
+    }
+    
+    return id;
+}
+
+
+static inline dest_id str_to_destid(const char *s) {
+    dest_id id = DEST_INVALID;
+
+    // Check if the string is NULL
+    if (s == NULL) {
+        id = DEST_NULL;
+    } else if (strcmp(s, "M") == 0) {
+        id = DEST_M;
+    } else if (strcmp(s, "D") == 0) {
+        id = DEST_D;
+    } else if (strcmp(s, "MD") == 0) {
+        id = DEST_MD;
+    } else if (strcmp(s, "A") == 0) {
+        id = DEST_A;
+    } else if (strcmp(s, "AM") == 0) {
+        id = DEST_AM;
+    } else if (strcmp(s, "AD") == 0) {
+        id = DEST_AD;
+    } else if (strcmp(s, "AMD") == 0) {
+        id = DEST_AMD;
+    } else if (strcmp(s, "") == 0) { 
+        id = DEST_NULL;
+    }
+
+    return id;
+}
 
 
 
+
+static inline comp_id str_to_compid(const char *s, int *a) {
+    comp_id id = COMP_INVALID;
+
+    if (s == NULL) {
+        return COMP_INVALID;
+    }
+
+    if (strcmp(s, "0") == 0) {
+        id = COMP_0;
+        *a = 0;
+    } else if (strcmp(s, "1") == 0) {
+        id = COMP_1;
+        *a = 0;
+    } else if (strcmp(s, "D") == 0) {
+        id = COMP_D;
+        *a = 0;
+    } else if (strcmp(s, "A") == 0) {
+        id = COMP_A;
+        *a = 0;
+    } else if (strcmp(s, "!D") == 0) {
+        id = COMP_NOT_D;
+        *a = 0;
+    } else if (strcmp(s, "!A") == 0) {
+        id = COMP_NOT_A;
+        *a = 0;
+    } else if (strcmp(s, "-D") == 0) {
+        id = COMP_NEG_D;
+        *a = 0;
+    } else if (strcmp(s, "-A") == 0) {
+        id = COMP_NEG_A;
+        *a = 0;
+    } else if (strcmp(s, "D+1") == 0) {
+        id = COMP_D_PLUS_1;
+        *a = 0;
+    } else if (strcmp(s, "A+1") == 0) {
+        id = COMP_A_PLUS_1;
+        *a = 0;
+    } else if (strcmp(s, "D-1") == 0) {
+        id = COMP_D_MINUS_1;
+        *a = 0;
+    } else if (strcmp(s, "A-1") == 0) {
+        id = COMP_A_MINUS_1;
+        *a = 0;
+    } else if (strcmp(s, "D+A") == 0) {
+        id = COMP_D_PLUS_A;
+        *a = 0;
+    } else if (strcmp(s, "D-A") == 0) {
+        id = COMP_D_MINUS_A;
+        *a = 0;
+    } else if (strcmp(s, "A-D") == 0) {
+        id = COMP_A_MINUS_D;
+        *a = 0;
+    } else if (strcmp(s, "D&A") == 0) {
+        id = COMP_D_AND_A;
+        *a = 0;
+    } else if (strcmp(s, "D|A") == 0) {
+        id = COMP_D_OR_A;
+        *a = 0;
+    } else if (strcmp(s, "M") == 0) { //48
+        //id = COMP_M;
+        id = 48;
+        *a = 1;
+    } else if (strcmp(s, "!M") == 0) { //49
+        //id = COMP_NOT_M;
+        id = 49;
+        *a = 1;
+    } else if (strcmp(s, "-M") == 0) { 
+        id = COMP_NEG_M;
+        *a = 1;
+    } else if (strcmp(s, "M+1") == 0) { // 55
+        // id = COMP_M_PLUS_1;
+        id = 55;
+        *a = 1;
+    } else if (strcmp(s, "M-1") == 0) {//50
+        //id = COMP_M_MINUS_1;
+        id = 50;
+        *a = 1;
+    } else if (strcmp(s, "D+M") == 0) {//2
+        //id = COMP_D_PLUS_M;
+        id = 2;
+        *a = 1;
+    } else if (strcmp(s, "D-M") == 0) {//19
+        //id = COMP_D_MINUS_M;
+        id = 19;
+        *a = 1;
+    } else if (strcmp(s, "M-D") == 0) {//7
+        //id = COMP_M_MINUS_D;
+        id = 7;
+        *a = 1;
+    } else if (strcmp(s, "D&M") == 0) {//0
+        //id = COMP_D_AND_M;
+        id = 0;
+        *a = 1;
+    } else if (strcmp(s, "D|M") == 0) {//21
+        //id = COMP_D_OR_M;
+        id = 21;
+        *a = 1;
+    }
+
+    return id;
+}
 
 
 #endif
