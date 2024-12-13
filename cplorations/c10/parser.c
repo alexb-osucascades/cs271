@@ -45,7 +45,7 @@ char *strip(char *s){
  *
  * returns: nothing
  */
-void parse(FILE * file){
+int parse(FILE * file, instruction *instructions){
 	
 		char line[MAX_LINE_LENGTH] = {0};
 		char inst_type;
@@ -78,6 +78,12 @@ void parse(FILE * file){
 					exit_program(EXIT_INVALID_A_INSTR, line_num, line);
 				}
 				instr.type = A_type;
+				if (instr.a_instr.is_addr) { 
+					printf("A: %d\n", instr.a_instr.address); 
+				} 
+				else { 
+					printf("A: %s\n", instr.a_instr.label); 
+					}
 				
 			}
 			else if (is_label(line)) {
@@ -99,19 +105,40 @@ void parse(FILE * file){
 				continue;
 
 			}
-			else if (is_Ctype(line)) {
+         	else if (is_Ctype(line)) {
 				inst_type = 'C';
 				i++;
-			}
-			else {
-				inst_type = ' ';
-				i++;
-			}
+
+				// Create temporary line and copy current line into it
+				char tmp_line[MAX_LINE_LENGTH];
+				strcpy(tmp_line, line);
+
+				// Parse C instruction
+				parse_C_instruction(tmp_line, &instr.c_instr);
+
+				// Check for invalid fields in the C instruction
+				if (instr.c_instr.dest == DEST_INVALID) {
+					exit_program(EXIT_INVALID_C_DEST, line_num, line);
+				}
+				if (instr.c_instr.comp == COMP_INVALID) {
+					exit_program(EXIT_INVALID_C_COMP, line_num, line);
+				}
+				if (instr.c_instr.jump == JMP_INVALID) {
+					exit_program(EXIT_INVALID_C_JUMP, line_num, line);
+				}
+
+				instr.type = C_type;
+				printf("C: d=%d, c=%d, j=%d\n", instr.c_instr.dest, instr.c_instr.comp, instr.c_instr.jump);
+
+			} else {
+					inst_type = ' ';
+					i++;
+				}
 
 			//printf("%u: %c  %s\n", instr_num, inst_type, line);
-			instr_num++;
+			instructions[instr_num++] = instr;
 		}
-
+	return instr_num;
 }
 
 
@@ -193,3 +220,42 @@ bool parse_A_instruction(const char *line, a_instruction *instr) {
 
     return true;
 }
+
+
+
+void parse_C_instruction(char *line, c_instruction *instr) {
+	//printf("GOT HERE");
+
+	//Change all of these (except a) to default (-1)
+    instr->jump = JMP_INVALID;
+    instr->comp = COMP_INVALID;
+    instr->dest = DEST_INVALID;
+	instr->a = 0;
+
+	char line_copy[MAX_LINE_LENGTH];
+	strcpy(line_copy, line);
+	line_copy[MAX_LINE_LENGTH - 1] = '\0';
+
+    // Tokenize the line 
+	char *temp = strtok(line_copy, ";");
+	char *jump_part = strtok(NULL, ";");
+
+
+    // Tokenize the temp value 
+	char *dest_part = strtok(temp, "=");
+	char *comp_part = strtok(NULL, "=");
+
+    // If comp is NULL, dest_part is actually comp and dest is NULL
+	if(comp_part == NULL){
+		comp_part = dest_part;
+		dest_part = NULL;
+	}
+
+    // Set jump, comp, dest, and a
+	int a_bit = 0;
+	instr->comp = str_to_compid(comp_part, &a_bit);
+	instr->dest = dest_part ? str_to_destid(dest_part) : DEST_NULL;
+	instr->jump = jump_part ? str_to_jumpid(jump_part) : JMP_NULL;
+	instr->a = a_bit;
+}
+
