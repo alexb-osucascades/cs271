@@ -8,9 +8,11 @@
 #include "parser.h"
 #include "error.h"
 #include "symtable.h"
+#define MAX_INSTRUCTION_COUNT 30000
 
 int main(int argc, const char *argv[])
-{		
+{
+	instruction *instructions = malloc(MAX_INSTRUCTION_COUNT * sizeof(instruction));		
 
 	if (argc != 2) {
 		// incorrect number of arguments
@@ -25,14 +27,17 @@ int main(int argc, const char *argv[])
 
 		} else {
 
-			parse(fin);
+			int num_instructions = parse(fin, instructions);
 
-			symtable_print_labels();
+			//symtable_print_labels();
 
 			fclose(fin);
+			
 
 		}
 	}
+
+	free(instructions);
 			
 }
 
