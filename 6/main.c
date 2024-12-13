@@ -28,6 +28,8 @@ int main(int argc, const char *argv[])
 		} else {
 
 			int num_instructions = parse(fin, instructions);
+			assemble(argv[1], instructions, num_instructions);
+			
 
 			//symtable_print_labels();
 
