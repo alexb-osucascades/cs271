@@ -109,7 +109,6 @@ int parse(FILE * file, instruction *instructions){
 				inst_type = 'C';
 				i++;
 
-				// Create temporary line and copy current line into it
 				char tmp_line[MAX_LINE_LENGTH];
 				strcpy(tmp_line, line);
 
@@ -117,24 +116,23 @@ int parse(FILE * file, instruction *instructions){
 				parse_C_instruction(tmp_line, &instr.c_instr);
 
 				// Check for invalid fields in the C instruction
-				if (instr.c_instr.dest == DEST_INVALID) {
+				if (instr.c_instr.dest == -1) {
 					exit_program(EXIT_INVALID_C_DEST, line_num, line);
 				}
-				if (instr.c_instr.comp == COMP_INVALID) {
+				else if (instr.c_instr.comp == -1) {
 					exit_program(EXIT_INVALID_C_COMP, line_num, line);
 				}
-				if (instr.c_instr.jump == JMP_INVALID) {
+				else if (instr.c_instr.jump == -1) {
 					exit_program(EXIT_INVALID_C_JUMP, line_num, line);
 				}
-
+				 
+				else {
 				instr.type = C_type;
 				printf("C: d=%d, c=%d, j=%d\n", instr.c_instr.dest, instr.c_instr.comp, instr.c_instr.jump);
 
-			} else {
-					inst_type = ' ';
-					i++;
 				}
 
+			} 
 			//printf("%u: %c  %s\n", instr_num, inst_type, line);
 			instructions[instr_num++] = instr;
 		}
